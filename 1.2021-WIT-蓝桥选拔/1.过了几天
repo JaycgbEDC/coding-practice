@@ -8,13 +8,132 @@ Output
 每组测试数据输出一个数代表中间间隔的天数，每组输出占一行
 
 Sample Input
-复制
 3
 2000:01:01 2000:01:02
 2000:01:01 2001:01:01
 2000:06:12 2021:03:14
+
+
 Sample Output
-复制
 2
 367
 7581
+
+解：
+1.我写的：
+#include <iostream>
+using namespace std;
+
+
+int leapyear[][13] = {{0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}, {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}};//闰年2月29天，平年28天 
+struct date {
+	int y;
+	int m;
+	int d;
+};
+
+
+int judge(int y) {
+	if (y % 4 == 0 && y % 100 != 0 || y % 400 == 0) return 1;//注意这里判断平年闰年的方法，我当时把第一段的"y % 100"写成"y % 400"了！
+	else return 0;
+}
+
+
+void solve(int y1, int m1, int d1, int y2, int m2, int d2) {
+	int count = 1;
+	while (y1 != y2 || m1 != m2 || d1 != d2) {
+		if (d1 > leapyear[judge(y1)][m1]) {
+			d1 = 1;
+			m1++;
+			if (m1 > 12) {
+				y1++;
+				m1 = 1;
+			}
+		}
+		else {
+			d1++;
+			count++;
+		}
+	}
+	cout << count << endl;
+}
+
+
+int main()
+{
+  int t;
+  cin >> t;
+  while (t--) {
+  	date start, end;
+  	scanf("%d:%d:%d %d:%d:%d", &start.y, &start.m, &start.d, &end.y, &end.m, &end.d);
+  	solve(start.y, start.m, start.d, end.y, end.m, end.d);
+  }
+  return 0;
+}
+
+2.别人写的：
+# include <iostream>
+
+struct date {
+    int year;
+    int month;
+    int day;
+};
+
+int mon[20] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+bool isLeap(int year) {
+    return (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
+}
+
+int cnt(date a) {
+    int y = a.year;
+    int m = a.month;
+    int d = a.day;
+
+    int sum = 0;
+    for (int i = 1; i < y; i++) {
+        if (isLeap(i)) {
+            sum += 366;
+        } else {
+            sum += 365;
+        }
+    }
+
+    for (int i = 1; i < m; i++) {
+        if (i == 2) {
+            if (isLeap(y)) {
+                sum += 29;
+            } else {
+                sum += 28;
+            }
+        } else {
+            sum += mon[i];
+        }
+    }
+
+    sum += d - 1;
+    return sum;
+}
+
+void solve() {
+    date d1, d2;
+    char c;
+    std::cin >> d1.year >> c >> d1.month >> c >> d1.day
+             >> d2.year >> c >> d2.month >> c >> d2.day;
+            
+    int num1 = cnt(d1);
+    int num2 = cnt(d2);
+
+    std::cout << num2 - num1 + 1 << "\n";
+}
+
+int main() {
+    int T;
+    std::cin >> T;
+    while (T--) {
+        solve();
+    }
+
+    return 0;
+}
