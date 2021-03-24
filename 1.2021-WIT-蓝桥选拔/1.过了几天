@@ -20,7 +20,7 @@ Sample Output
 7581
 
 解：
-1.我写的：
+1.我写的：（思路一：天数加加至目标日期）
 #include <iostream>
 using namespace std;
 
@@ -71,7 +71,7 @@ int main()
   return 0;
 }
 
-2.别人写的：
+2.别人写的：（年月日分开算。比如说2000:10:29-2011:11:22,就先算2000到2010这些年的天数，加上从1:1-11:22的总天数，减去重复计算的从1:1-10:29的天数）
 # include <iostream>
 
 struct date {
